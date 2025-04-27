@@ -3,7 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import { compileMDX } from "next-mdx-remote/rsc";
 import MDXComponentsWrapper from "@/components/MDXComponents";
-import { getAllPosts } from "@/lib/getPosts";
+import { getAllPosts } from "@/lib/getAllPosts";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 

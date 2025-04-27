@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image"; // ✅ import Next.js Image
+import Image from "next/image";
 
-export default function TopTabs({ posts }) {
+export default function TopTabs({ posts = [] }) {
   const [activeTab, setActiveTab] = useState("All");
-  const [displayCount, setDisplayCount] = useState(5);
-  const [showScrollTop, setShowScrollTop] = useState(false);
+  const searchParams = useSearchParams();
+  const selectedAuthor = searchParams.get("author");
 
   const categories = [
     "All",
@@ -20,32 +20,11 @@ export default function TopTabs({ posts }) {
     "Gaming",
   ];
 
-  const searchParams = useSearchParams();
-  const selectedAuthor = searchParams.get("author");
-
   useEffect(() => {
     if (selectedAuthor) {
-      setActiveTab("All"); // Reset tab if author selected
+      setActiveTab("All");
     }
   }, [selectedAuthor]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Scroll-to-top button after 300px
-      setShowScrollTop(window.scrollY > 300);
-
-      // Load more posts when near bottom
-      if (
-        window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 200
-      ) {
-        setDisplayCount((prev) => prev + 5);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const filteredPosts = posts.filter((post) => {
     const matchAuthor = selectedAuthor
@@ -57,17 +36,13 @@ export default function TopTabs({ posts }) {
   });
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      {/* Top Tabs (only if no author selected) */}
+    <div className="max-w-2xl mx-auto p-4">
       {!selectedAuthor && (
         <div className="flex gap-3 overflow-x-auto whitespace-nowrap mb-8 scrollbar-hide">
           {categories.map((category) => (
             <button
               key={category}
-              onClick={() => {
-                setActiveTab(category);
-                setDisplayCount(5); // Reset load count when switching category
-              }}
+              onClick={() => setActiveTab(category)}
               className={`px-4 py-2 rounded-full border text-sm flex-shrink-0 transition-colors duration-75 ${
                 activeTab === category
                   ? "bg-white text-black border-white"
@@ -80,7 +55,6 @@ export default function TopTabs({ posts }) {
         </div>
       )}
 
-      {/* Clear Author Filter Button */}
       {selectedAuthor && (
         <div className="text-center mb-6">
           <Link
@@ -92,28 +66,28 @@ export default function TopTabs({ posts }) {
         </div>
       )}
 
-      {/* Posts List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Posts Feed */}
+      <div className="flex flex-col gap-6">
         {filteredPosts.length > 0 ? (
-          filteredPosts.slice(0, displayCount).map((post) => (
+          filteredPosts.map((post) => (
             <Link
               key={post.slug}
               href={`/posts/${post.slug}`}
-              className="bg-[#1C1C1F] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-transform duration-200"
+              className="bg-[#1C1C1F] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:bg-[#27272a] transition-all duration-150"
             >
               <div className="relative w-full h-48">
                 <Image
                   src={post.coverImage}
                   alt={post.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover rounded-t-2xl"
-                  priority={false} // ✅ lazy loading automatically handled
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-t-2xl"
+                  priority
                 />
               </div>
               <div className="p-4">
                 <h2 className="text-2xl font-semibold">{post.title}</h2>
-                <p className="text-gray-400 text-sm mt-1">
+                <p className="text-gray-400 text-sm">
                   {new Date(post.date).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
@@ -121,16 +95,13 @@ export default function TopTabs({ posts }) {
                   })}
                 </p>
                 <div className="flex items-center gap-3 mt-3">
-                  <div className="relative w-8 h-8">
-                    <Image
-                      src={post.authorImage}
-                      alt={post.authorName}
-                      fill
-                      sizes="32px"
-                      className="rounded-full object-cover"
-                      priority={false}
-                    />
-                  </div>
+                  <Image
+                    src={post.authorImage}
+                    alt={post.authorName}
+                    width={32}
+                    height={32}
+                    className="rounded-full object-cover"
+                  />
                   <span className="text-sm text-gray-400">
                     {post.authorName}
                   </span>
@@ -143,16 +114,6 @@ export default function TopTabs({ posts }) {
           <div className="text-center text-gray-500 mt-10">No posts found.</div>
         )}
       </div>
-
-      {/* Scroll to Top Button */}
-      {showScrollTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-24 right-5 w-12 h-12 flex items-center justify-center bg-white text-black text-2xl rounded-full shadow-lg hover:bg-gray-300 transition-all z-50"
-        >
-          ↑
-        </button>
-      )}
     </div>
   );
 }

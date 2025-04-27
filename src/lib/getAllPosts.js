@@ -14,16 +14,11 @@ export function getAllPosts() {
       const { data } = matter(fileContents);
 
       return {
-        title: data.title,
-        description: data.description,
-        date: data.date,
-        coverImage: data.coverImage,
-        authorName: data.authorName,
-        authorImage: data.authorImage,
-        category: data.category, // ✅ THIS MUST EXIST
         slug: filename.replace(/\.mdx$/, ""),
+        ...data,
       };
-    });
+    })
+    .sort((a, b) => new Date(b.date) - new Date(a.date)); // newest first
 
-  return posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+  return posts;
 }
