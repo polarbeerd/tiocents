@@ -1,3 +1,4 @@
+import Link from "next/link";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import { Suspense } from "react";
@@ -12,12 +13,13 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="bg-[#0D0D0D] text-[#E5E5E5] min-h-screen flex flex-col">
         <header className="w-full py-4 flex justify-center border-b border-gray-700 text-xl font-bold">
-          tiocents
+          <Link href="/" className="hover:opacity-80 transition-opacity">
+            tiocents
+          </Link>
         </header>
 
         <main className="flex-grow">{children}</main>
 
-        {/* Show BottomNav ONLY if not on homepage */}
         <Suspense fallback={null}>
           <BottomNav />
         </Suspense>
