@@ -6,12 +6,6 @@ import Link from "next/link";
 
 export default function BottomNav() {
   const pathname = usePathname();
-
-  // 🆕 Hide BottomNav completely on landing page
-  if (pathname === "/") {
-    return null;
-  }
-
   const [hidden, setHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [timeoutId, setTimeoutId] = useState(null);
@@ -35,6 +29,11 @@ export default function BottomNav() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, [lastScrollY, timeoutId]);
+
+  // 🔥 ONLY AFTER all hooks are called, we can now safely do:
+  if (pathname === "/") {
+    return null;
+  }
 
   const navItems = [
     { label: "Home", href: "/posts", icon: "🏠" },
