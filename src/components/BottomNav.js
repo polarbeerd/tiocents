@@ -1,40 +1,36 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 export default function BottomNav() {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
 
-  // 👉 NEW: Hide BottomNav completely on homepage "/"
-  if (pathname === "/") {
-    return null;
-  }
-
   useEffect(() => {
-    let lastScrollY = window.scrollY;
-
-    function onScroll() {
-      if (window.scrollY > lastScrollY) {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      if (scrollY > 100) {
         setHidden(true);
       } else {
         setHidden(false);
       }
-      lastScrollY = window.scrollY;
-    }
+    };
 
-    if (typeof window !== "undefined") {
-      window.addEventListener("scroll", onScroll);
-      return () => window.removeEventListener("scroll", onScroll);
-    }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navItems = [
     { label: "Home", href: "/posts", icon: "🏠" },
     { label: "Authors", href: "/authors", icon: "👤" },
   ];
+
+  // Don't render bottom nav on landing page ("/")
+  if (pathname === "/") {
+    return null;
+  }
 
   return (
     <nav
@@ -44,7 +40,7 @@ export default function BottomNav() {
     >
       {navItems.map((item) => (
         <Link
-          key={item.label}
+          key={item.href}
           href={item.href}
           className={`flex flex-col items-center text-xs transition-all ${
             pathname.startsWith(item.href)

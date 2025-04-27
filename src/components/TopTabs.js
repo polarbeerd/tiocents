@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image"; // ✅ import Next.js Image
 
 export default function TopTabs({ posts }) {
   const [activeTab, setActiveTab] = useState("All");
@@ -100,12 +101,16 @@ export default function TopTabs({ posts }) {
               href={`/posts/${post.slug}`}
               className="bg-[#1C1C1F] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:scale-[1.02] transition-transform duration-200"
             >
-              <img
-                src={post.coverImage}
-                alt={post.title}
-                loading="lazy" // ✅ Lazy load images
-                className="w-full h-48 object-cover"
-              />
+              <div className="relative w-full h-48">
+                <Image
+                  src={post.coverImage}
+                  alt={post.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover rounded-t-2xl"
+                  priority={false} // ✅ lazy loading automatically handled
+                />
+              </div>
               <div className="p-4">
                 <h2 className="text-2xl font-semibold">{post.title}</h2>
                 <p className="text-gray-400 text-sm mt-1">
@@ -116,12 +121,16 @@ export default function TopTabs({ posts }) {
                   })}
                 </p>
                 <div className="flex items-center gap-3 mt-3">
-                  <img
-                    src={post.authorImage}
-                    alt={post.authorName}
-                    loading="lazy" // ✅ Lazy load images
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
+                  <div className="relative w-8 h-8">
+                    <Image
+                      src={post.authorImage}
+                      alt={post.authorName}
+                      fill
+                      sizes="32px"
+                      className="rounded-full object-cover"
+                      priority={false}
+                    />
+                  </div>
                   <span className="text-sm text-gray-400">
                     {post.authorName}
                   </span>
