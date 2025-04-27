@@ -6,6 +6,12 @@ import Link from "next/link";
 
 export default function BottomNav() {
   const pathname = usePathname();
+
+  // 🆕 Hide BottomNav completely on landing page
+  if (pathname === "/") {
+    return null;
+  }
+
   const [hidden, setHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [timeoutId, setTimeoutId] = useState(null);
@@ -15,15 +21,12 @@ export default function BottomNav() {
       const currentScrollY = window.scrollY;
 
       if (currentScrollY > lastScrollY) {
-        // Scrolling Down → hide
         setHidden(true);
       } else {
-        // Scrolling Up → show
         setHidden(false);
       }
       setLastScrollY(currentScrollY);
 
-      // Show nav if user stops scrolling for 2 seconds
       clearTimeout(timeoutId);
       const newTimeoutId = setTimeout(() => setHidden(false), 2000);
       setTimeoutId(newTimeoutId);
@@ -55,7 +58,7 @@ export default function BottomNav() {
           }`}
           onClick={() => {
             if (typeof window !== "undefined" && "vibrate" in navigator) {
-              navigator.vibrate(50); // 50ms light vibration
+              navigator.vibrate(50);
             }
           }}
         >
