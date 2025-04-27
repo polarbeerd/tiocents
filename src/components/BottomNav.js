@@ -7,6 +7,8 @@ import Link from "next/link";
 export default function BottomNav() {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
+
+  // 👉 NEW: Hide BottomNav completely on homepage "/"
   if (pathname === "/") {
     return null;
   }
@@ -23,8 +25,10 @@ export default function BottomNav() {
       lastScrollY = window.scrollY;
     }
 
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", onScroll);
+      return () => window.removeEventListener("scroll", onScroll);
+    }
   }, []);
 
   const navItems = [
