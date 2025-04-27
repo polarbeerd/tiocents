@@ -1,5 +1,5 @@
 "use client";
-
+import { Home, Users } from "lucide-react"; // 🆕 import icons
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -36,8 +36,8 @@ export default function BottomNav() {
   }
 
   const navItems = [
-    { label: "Home", href: "/posts", icon: "🏠" },
-    { label: "Authors", href: "/authors", icon: "👤" },
+    { label: "Home", href: "/posts", icon: Home },
+    { label: "Authors", href: "/authors", icon: Users },
   ];
 
   return (
@@ -61,7 +61,7 @@ export default function BottomNav() {
             }
           }}
         >
-          <span className="text-2xl">{item.icon}</span>
+          <item.icon className="w-6 h-6" />
           {item.label}
         </Link>
       ))}
