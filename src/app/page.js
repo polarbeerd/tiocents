@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Welcome | My Writings",
-  description: "Explore ideas, thoughts, and more.",
+  description: "Explore ideas, thoughts, and inspiration.",
 };
 
 export default function HomePage() {
